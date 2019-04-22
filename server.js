@@ -1,12 +1,19 @@
 const express = require("express");
+import models, { sequelize } from './models';
 const app = express();
 const mongoose = require('mongoose');
 const dbUrl = "mongodb://branch:branch1@ds145456.mlab.com:45456/branch-chat-app";
 const bodyParser = require('body-parser');
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-
+// d3OnM0N4KyIPrzK6
 const Message = mongoose.model('Message', {name: String, message: String});
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+  });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -25,7 +32,7 @@ app.post('/messages', (req, res) => {
 		io.emit('message', req.body);
 		res.sendStatus(200);
 
-		
+
 	})
 });
 
@@ -37,8 +44,12 @@ mongoose.connect(dbUrl, (err) => {
 	console.log('mongodb connected', err);
 });
 
-const server = http.listen(3001, () => {
-	console.log('Server is running on port', server.address().port);
+const eraseDatabaseOnSync = true;
+
+sequelize.sync({force: eraseDatabaseOnSync }).then( async  => {
+	const server = http.listen(3001, () => {
+		console.log('Server is running on port', server.address().port);
+	});
 });
 
 

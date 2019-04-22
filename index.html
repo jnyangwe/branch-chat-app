@@ -11,7 +11,7 @@
 
 	<!-- Latest compiled JavaScript -->
    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-   
+
 </head>
 <body>
 <div class="container">
@@ -31,11 +31,11 @@
 </div>
 </div>
 <script>
-  
+
 $(() => {
     $("#send").click(()=>{
        sendMessage({
-          name: $("#name").val(), 
+          name: $("#name").val(),
           message:$("#message").val()});
         })
       getMessages()
