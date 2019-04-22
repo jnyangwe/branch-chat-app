@@ -1,0 +1,16 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: branch-chat-app-deployment
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: chat-app
+    spec:
+      containers:
+        - name: chat-server
+          image: gcr.io/branch-chat-app/branch-chat-app:latest
+          ports:
+            containerPort: 3001
