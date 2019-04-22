@@ -10,7 +10,7 @@ spec:
         app: chat-app
     spec:
       containers:
-        - name: chat-server
-          image: gcr.io/branch-chat-app/branch-chat-app:latest
-          ports:
-            containerPort: 3001
+      - name: chat-server
+        image: gcr.io/branch-chat-app/branch-chat-app:latest
+        ports:
+          containerPort: 3001
