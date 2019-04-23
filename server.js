@@ -1,11 +1,12 @@
 const express = require("express");
-const models = require("./models");
 const app = express();
 const mongoose = require('mongoose');
 const dbUrl = "mongodb://branch:branch1@ds145456.mlab.com:45456/branch-chat-app";
 const bodyParser = require('body-parser');
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+
+// define model
 const Message = mongoose.model('Message',
 {
   message: String,
@@ -17,22 +18,24 @@ const Message = mongoose.model('Message',
   answeredOn: Date,
 });
 
-
+//  define middleware
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
   });
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+// define routes
+// get all messages
 app.get('/messages', (req, res) => {
 	Message.find({}, (err, messages) => {
 		res.send(messages);
 	});
 })
 
+// answer all messages
 app.post('/answer', (req, res) => {
   try{
     Message.findById(req.body._id, function (err, msg) {
@@ -45,13 +48,13 @@ app.post('/answer', (req, res) => {
         io.emit('answer', msg);
         res.sendStatus(200);
       });
-
     });
   }catch(error){
     console.log(error);
   }
 })
 
+// create new message
 app.post('/message', (req, res) => {
 	const message = new Message(req.body);
 	message.save((err) => {
@@ -63,19 +66,19 @@ app.post('/message', (req, res) => {
 	})
 });
 
+
+// define socket connection
 io.on('connection', () => {
 	console.log('a user is connected');
 })
-
 io.on('error', (error) => {});
 
 mongoose.connect(dbUrl, (err) => {
 	console.log('mongodb connected', err);
 });
 
+
 const server = http.listen(3001, () => {
   console.log('Server is running on port', server.address().port);
 });
-
-
 app.use(express.static(__dirname));
