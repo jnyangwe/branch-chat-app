@@ -23,7 +23,10 @@
  <br>
  <textarea id ="message" class="form-control" placeholder="Your Message Here">
 </textarea>
- <br>
+  <br>
+  <p><input type="checkbox" name="urgent" value=""> Urgent</input></p>
+  <br>
+
  <button id="send" class="btn btn-success">Send</button>
  </div>
  <div id="messages">
@@ -35,15 +38,18 @@
 $(() => {
     $("#send").click(()=>{
        sendMessage({
-          name: $("#name").val(),
-          message:$("#message").val()});
+          customerName: $("#name").val(),
+          message:$("#message").val(),
+          urgent:true,
+          createdOn: new Date(),
+        });
         })
       getMessages()
     })
 
 function addMessages(message){
    $("#messages").append(`
-      <h4> ${message.name} </h4>
+      <h4> ${message.customerName} </h4>
       <p>  ${message.message} </p>`)
    }
 
@@ -54,7 +60,7 @@ function getMessages(){
  }
 
 function sendMessage(message){
-   $.post("/messages", message)
+   $.post("/message", message)
  }
 
  const socket = io();
